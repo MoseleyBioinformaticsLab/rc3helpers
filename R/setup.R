@@ -64,11 +64,11 @@ copy_unify_outputs = function(
       "{.val references_directory is `NULL`. Please supply a {.val references_directory}."
     )
   }
-  if (length(project_directory) == 1) {
-    dir_exists = fs::dir_exists(project_directory)
+  if (length(rc3_directory) == 1) {
+    dir_exists = fs::dir_exists(rc3_directory)
     if (dir_exists) {
       all_dirs = fs::path(
-        project_directory,
+        rc3_directory,
         .list_sources_annotations_dirs(short_id)
       )
     }

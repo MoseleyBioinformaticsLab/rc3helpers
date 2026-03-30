@@ -170,7 +170,7 @@ copy_unify_outputs = function(
   c(
     "data_sources.exon_sums" = "exon_sums_per_study",
     "data_sources.gene_sums" = "gene_sums_per_study",
-    "data_sources.junction_sums" = "junction_counts_per_study",
+    "data_sources.junctions" = "junction_counts_per_study",
     "data_sources.metadata" = "metadata",
     "annotations.gene_sums" = "gene_sums.*.gtf.gz",
     "annotations.exon_sums" = "exon_sums.*.gtf.gz"

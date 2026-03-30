@@ -100,7 +100,9 @@ copy_unify_outputs = function(
       "Please check the contents of {.val {references_directory}} to make sure the 'exon_sums' and 'gene_sums' files exist!"
     )
   }
-  purrr::iwalk(copy_list, \(dest_desc, source_dir) {
+  purrr::iwalk(copy_list, \(source_dir, dest_desc) {
+    # print(source_dir)
+    # print(dest_desc)
     if (grepl("data_sources", dest_desc)) {
       dest_dir = all_dirs[dest_desc]
       full_source = fs::path(unify_directory, source_dir)

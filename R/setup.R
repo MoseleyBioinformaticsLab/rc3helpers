@@ -5,6 +5,7 @@
 #' @param base_dir the top level directory where projects should live
 #' @param short_id the short identifier used when unifying your outputs
 #'
+#' @export
 #' @import cli
 #' @import fs
 #' @return project directory list
@@ -40,6 +41,7 @@ setup_rc3_directory = function(base_dir = ".", short_id = "test") {
 #' @param unify_directory where the unify outputs are stored
 #' @param references_directory where the reference data is stored
 #'
+#' @export
 #' @return NULL, invisibly
 copy_unify_outputs = function(
   rc3_directory = NULL,

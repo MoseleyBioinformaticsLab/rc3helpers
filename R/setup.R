@@ -107,7 +107,7 @@ rc3_copy_unify_outputs = function(
     recurse = TRUE,
     regexp = "[exon_sums|gene_sums].*.gtf.gz",
   )
-  if (length(ref_files) != 2) {
+  if (length(ref_files) >= 2) {
     cli::cli_abort(
       "Please check the contents of {.val {references_directory}} to make sure the 'exon_sums' and 'gene_sums' files exist!"
     )

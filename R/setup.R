@@ -7,7 +7,6 @@
 #'
 #' @param base_dir the top level directory where projects should live
 #' @param short_id the short identifier used when unifying your outputs
-#' @param organism what organism you want (must be human or mouse)
 #'
 #' @export
 #' @import cli
@@ -152,7 +151,7 @@ rc3_copy_unify_outputs = function(
 create_annotation_sum_links = function(
   all_dirs,
   organism = "human",
-  reference = "G026"
+  annotation = "G026"
 ) {
   annotation_files = fs::dir_ls(
     all_dirs,

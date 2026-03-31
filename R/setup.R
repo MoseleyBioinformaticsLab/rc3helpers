@@ -168,7 +168,7 @@ create_annotation_sum_links = function(
   )
   fs::link_create(annotation_gene, gene_file)
 
-  annotation_exon = grep("exon_sums", annoation_files, value = TRUE)
+  annotation_exon = grep("exon_sums", annotation_files, value = TRUE)
   exon_file = fs::path(
     fs::path_dir(annotation_exon),
     paste0(organism, ".exon_sums.", annotation, ".gtf.gz")

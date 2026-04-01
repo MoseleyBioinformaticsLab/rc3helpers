@@ -111,17 +111,26 @@ check_monorail = function(
       fs::path(monorail, "singularity", "run_recount_pump.sh"),
       fs::path(monorail, "singularity", "run_recount_unify.sh")
     )
-    out_exists = fs::file_exists(out_monorail)
-    if (any(!out_exists)) {
-      cli::cli_abort(
-        message = c(
-          'One or more files that should be present in {.var monorail}, {.arg {arg}} dont exist.',
-          'i' = 'Check for {.file singularity/run_recount_pump.sh} and {.file singularity/run_recount_unify.sh}'
-        ),
-        call = call
+  } else if (length(monorail) == 2) {
+    out_monorail = monorail
+  } else {
+    cli::cli_abort(
+      message = c(
+        '{.arg {arg}} {.code {length({arg})} returns {length(monorail)}.'
       )
-    }
+    )
   }
+  out_exists = fs::file_exists(out_monorail)
+  if (any(!out_exists)) {
+    cli::cli_abort(
+      message = c(
+        'One or more files that should be present in {.var monorail}, {.arg {arg}} dont exist.',
+        'i' = 'Check for {.file singularity/run_recount_pump.sh} and {.file singularity/run_recount_unify.sh}'
+      ),
+      call = call
+    )
+  }
+
   return(out_monorail)
 }
 

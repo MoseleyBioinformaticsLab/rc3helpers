@@ -55,7 +55,7 @@ rc3_setup_directory = function(
 #' @param annotation what annotations are we interested in (for real or pretend)
 #'
 #' @export
-#' @return NULL, invisibly
+#' @return output of the "tree" command on rc3_directory
 rc3_copy_unify_outputs = function(
   rc3_directory = NULL,
   short_id = "test",
@@ -144,7 +144,15 @@ rc3_copy_unify_outputs = function(
     annotation = annotation
   )
 
-  return(invisible(NULL))
+  base_path = fs::path_common(all_dirs)
+  tree_output = tryCatch(
+    system2("tree", args = base_path, stdout = TRUE),
+    error = function(x) {
+      NULL
+    }
+  )
+  cat(tree_output, sep = "\n")
+  return(invisible(tree_output))
 }
 
 
@@ -166,14 +174,14 @@ create_annotation_sum_links = function(
     fs::path_dir(annotation_gene),
     paste0(organism, ".gene_sums.", annotation, ".gtf.gz")
   )
-  fs::link_create(annotation_gene, gene_file)
+  try(fs::link_create(annotation_gene, gene_file))
 
   annotation_exon = grep("exon_sums", annotation_files, value = TRUE)
   exon_file = fs::path(
     fs::path_dir(annotation_exon),
     paste0(organism, ".exon_sums.", annotation, ".gtf.gz")
   )
-  fs::link_create(annotation_exon, exon_file)
+  try(fs::link_create(annotation_exon, exon_file))
 
   sums_files = fs::dir_ls(
     all_dirs,
@@ -191,7 +199,7 @@ create_annotation_sum_links = function(
     fs::path_dir(sum_genes),
     replace_annotation(fs::path_file(sum_genes), annotation)
   )
-  fs::link_create(sum_genes, gene_file)
+  try(fs::link_create(sum_genes, gene_file))
 
   sum_exons = grep(
     "exon_sums",
@@ -203,7 +211,7 @@ create_annotation_sum_links = function(
     fs::path_dir(sum_exons),
     replace_annotation(fs::path_file(sum_exons), annotation)
   )
-  fs::link_create(sum_exons, exon_file)
+  try(fs::link_create(sum_exons, exon_file))
   return(invisible(NULL))
 }
 

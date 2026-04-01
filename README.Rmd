@@ -1,0 +1,185 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# rc3helpers
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+rc3helpers is a little package designed around making it easier to take the output of a custom `recount-unify` run, and create the directory structure that
+will be easily imported into the [recount3](https://bioconductor.org/packages/release/bioc/html/recount3.html) R package.
+
+recount3 has a very, very specific directory structure it wants for importing data.
+This directory is not trivial to generate after you've done a recount-unify.
+
+Two important notes:
+
+1. As of recount3 v 1.22.0, there is no option to have an organism outside of *human* or *mouse*, so we always use a directory of one of those two organisms.
+1. This also means that only certain annotations / references are supported. Therefore, we create symbolic links to the files that `recount3` expects to be there.
+
+## Installation
+
+You can install the development version of `rc3helpers` from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("MoseleyBioinformaticsLab/rc3helpers")
+```
+
+## Example
+
+I previously ran two SRA samples in local mode through the pump and unify workflow, with the `short_id` **sratest**.
+
+```{r}
+#| label: setup-directories
+library(rc3helpers)
+tmp_dir = tempdir()
+rc3_dirs = rc3_setup_directory(base_dir = tmp_dir, short_id = "sratest")
+```
+
+The directories created should look like this:
+
+```
+human
+├── annotations
+│   ├── exon_sums
+│   └── gene_sums
+└── data_sources
+    └── sratest
+        ├── base_sums
+        ├── exon_sums
+        ├── gene_sums
+        ├── junctions
+        └── metadata
+```
+
+The unify output looks like this:
+
+```
+├── exon_sums_per_study
+│   └── st
+│       └── sratest
+│           ├── sratest.exon_sums.sratest.ERCC.gz
+│           ├── sratest.exon_sums.sratest.F006.gz
+│           ├── sratest.exon_sums.sratest.G026.gz
+│           ├── sratest.exon_sums.sratest.G029.gz
+│           ├── sratest.exon_sums.sratest.R109.gz
+│           └── sratest.exon_sums.sratest.SIRV.gz
+├── gene_sums_per_study
+│   └── st
+│       └── sratest
+│           ├── sratest.gene_sums.sratest.ERCC.gz
+│           ├── sratest.gene_sums.sratest.F006.gz
+│           ├── sratest.gene_sums.sratest.G026.gz
+│           ├── sratest.gene_sums.sratest.G029.gz
+│           ├── sratest.gene_sums.sratest.R109.gz
+│           └── sratest.gene_sums.sratest.SIRV.gz
+├── ids.tsv
+├── junction_counts_per_study
+│   └── st
+│       └── sratest
+│           ├── sratest.junctions.sratest.ALL.ID.gz
+│           ├── sratest.junctions.sratest.ALL.MM.gz
+│           ├── sratest.junctions.sratest.ALL.RR.gz
+│           ├── sratest.junctions.sratest.UNIQUE.ID.gz
+│           ├── sratest.junctions.sratest.UNIQUE.MM.gz
+│           └── sratest.junctions.sratest.UNIQUE.RR.gz
+├── junctions.bgz
+├── junctions.bgz.tbi
+├── junctions.sqlite
+|
+|
+|
+```
+
+Where this is a model organism, you are going to need the reference sets of things downloaded too.
+We can download the gene and exon sum annotations from recount3, in our case for G026.
+
+```
+wget http://duffel.rail.bio/recount3/human/new_annotations/gene_sums/human.gene_sums.G026.gtf.gz
+wget http://duffel.rail.bio/recount3/human/new_annotations/exon_sums/human.exon_sums.G026.gtf.gz
+```
+
+We can pass the list of directories created by `rc3_setup_directories` to `rc3_copy_unify_outputs`:
+
+```{r}
+#| label: copy-unify
+#| eval: false
+rc3_dirs |>
+  rc3_copy_unify_outputs(
+    short_id = "sratest",
+    unify_directory = "/path/to/unify",
+    references_directory = "/path/to/references/hg38"
+  )
+```
+
+Which will create this directory structure. You may see an error when working with human data, as the function tries to link a file that actually already exists.
+That's OK.
+
+```
+human
+├── annotations                                                                                                                                       
+│   ├──exon_sums                                         
+│   │   ├── human.exon_sums.G026.gtf.gz                                                                                                                    
+│   └── gene_sums                                                                                                                                
+│       ├── human.gene_sums.G026.gtf.gz                                                                                                                 
+└── data_sources
+    └── sratest
+        ├── base_sums
+        ├── exon_sums
+        │   └── st
+        │       └── sratest
+        │           ├── sratest.exon_sums.sratest.ERCC.gz
+        │           ├── sratest.exon_sums.sratest.F006.gz
+        │           ├── sratest.exon_sums.sratest.G026.gz
+        │           ├── sratest.exon_sums.sratest.G029.gz
+        │           ├── sratest.exon_sums.sratest.R109.gz
+        │           └── sratest.exon_sums.sratest.SIRV.gz
+        ├── gene_sums                                                                                                                                    
+        │   └── st                                                                                                                                                 
+        │       └── sratest
+        │           ├── sratest.gene_sums.sratest.ERCC.gz
+        │           ├── sratest.gene_sums.sratest.F006.gz
+        │           ├── sratest.gene_sums.sratest.G026.gz
+        │           ├── sratest.gene_sums.sratest.G029.gz
+        │           ├── sratest.gene_sums.sratest.R109.gz
+        │           └── sratest.gene_sums.sratest.SIRV.gz
+        ├── junctions
+        │   └── st
+        │       └── sratest
+        │           ├── sratest.junctions.sratest.ALL.ID.gz
+        │           ├── sratest.junctions.sratest.ALL.MM.gz
+        │           ├── sratest.junctions.sratest.ALL.RR.gz
+        │           ├── sratest.junctions.sratest.UNIQUE.ID.gz
+        │           ├── sratest.junctions.sratest.UNIQUE.MM.gz
+        │           └── sratest.junctions.sratest.UNIQUE.RR.gz
+        └── metadata
+            ├── sratest.recount_project.MD.gz
+            └── st
+                └── sratest
+                    ├── sratest.recount_project.sratest.MD.gz
+                    ├── sratest.recount_qc.sratest.MD.gz
+                    └── sratest.sratest.sratest.MD.gz
+```
+
+Then we can load up recount3 and start working with this dataset:
+
+```{r}
+#| label: run-recount3
+#| eval: false
+library(recount3)
+hp = available_projects(recount3_url = tmp_dir)
+rse_genes = create_rse(hp[1, ], recount3_url = tmp_dir)
+```

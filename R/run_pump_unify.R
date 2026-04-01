@@ -96,7 +96,7 @@ check_monorail = function(
   arg = rlang::caller_arg(monorail),
   call = rlang::caller_env()
 ) {
-  mono_dir_exists = fs::dir_exists(monorail[1])
+  mono_dir_exists = fs::dir_exists(fs::path_dir(monorail[1]))
   if (!mono_dir_exists) {
     cli::cli_abort(
       message = c(

@@ -17,7 +17,7 @@
 #' @export
 #' @return unify output directory
 rc3_run_pump_unify = function(
-  fasta = ".",
+  fasta = getwd(),
   outputs = fs::path_dir(fs::path_expand(fasta)),
   monorail = "monorail-external",
   recount_pump = "recount-pump_1.1.3.sif",
@@ -28,7 +28,7 @@ rc3_run_pump_unify = function(
   shortid = "test",
   ncore = 1
 ) {
-  withr::local_dir()
+  withr::local_dir(outputs)
   arg = rlang::caller_arg(fasta)
   unique_samples = check_samples(fasta, arg = arg)
   sample_paths = fs::path(fasta, unique_samples)

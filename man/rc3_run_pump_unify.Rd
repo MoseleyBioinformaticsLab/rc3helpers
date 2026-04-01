@@ -5,7 +5,7 @@
 \title{run recount-pump and recount-unify}
 \usage{
 rc3_run_pump_unify(
-  fasta = ".",
+  fasta = getwd(),
   outputs = fs::path_dir(fs::path_expand(fasta)),
   monorail = "monorail-external",
   recount_pump = "recount-pump_1.1.3.sif",

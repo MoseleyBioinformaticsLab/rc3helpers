@@ -13,19 +13,21 @@
 #' @param ncore how many cores to use
 #'
 #' @import rlang
+#' @importFrom withr local_dir
 #' @return unify output directory
-run_pump_unify = function(
-  fasta,
+rc3_run_pump_unify = function(
+  fasta = ".",
   outputs = fs::path_dir(fs::path_expand(fasta)),
-  monorail,
-  recount_pump,
-  recount_unify,
-  reference_path,
-  reference,
-  studyid,
-  shortid,
-  ncore
+  monorail = "monorail-external",
+  recount_pump = "recount-pump_1.1.3.sif",
+  recount_unify = "recount-pump_1.1.3.sif",
+  reference_path = ".",
+  reference = "hg38",
+  studyid = "other1",
+  shortid = "test",
+  ncore = 1
 ) {
+  withr::local_dir()
   arg = rlang::caller_arg(fasta)
   unique_samples = check_samples(fasta, arg = arg)
   sample_paths = fs::path(fasta, unique_samples)
@@ -173,5 +175,18 @@ check_samples = function(
       call = call
     )
   }
+
+  last_two = stringr::str_sub(unique_fasta, -2)
+  has_punct = grepl("[[:punct:]]| ", last_two)
+
+  if (any(has_punct)) {
+    cli::cli_abort(
+      message = c(
+        'One or more file names contain punctuation or spaces in the sample ID portion.',
+        'i' = 'Check all filenames for punctuation or spaces in {.file {arg}}.'
+      )
+    )
+  }
+
   return(unique_fasta)
 }

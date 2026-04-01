@@ -10,8 +10,6 @@ rc3_setup_directory(base_dir = ".", short_id = "test", organism = "human")
 \item{base_dir}{the top level directory where projects should live}
 
 \item{short_id}{the short identifier used when unifying your outputs}
-
-\item{organism}{what organism you want (must be human or mouse)}
 }
 \value{
 project directory list

@@ -18,11 +18,62 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-rc3helpers is a little package designed around making it easier to take the output of a custom `recount-unify` run, and create the directory structure that
-will be easily imported into the [recount3](https://bioconductor.org/packages/release/bioc/html/recount3.html) R package.
+rc3helpers is a little package designed around making it easier work with local samples in two ways:
 
-recount3 has a very, very specific directory structure it wants for importing data.
-This directory is not trivial to generate after you've done a recount-unify.
+1. Running recount-pump and recount-unify;
+1. Copying the output of recount-unify into the directory structure that allows importing local data into the [recount3](https://bioconductor.org/packages/release/bioc/html/recount3.html) R package.
+
+
+## Running Pump & Unify
+
+This assumes you've already gotten everything setup for running pump and unify locally.
+You can find instructions for that on the [monorail](https://github.com/langmeadlab/monorail) README.
+
+I realize that the rc3_run_pump_unify function call takes a **lot** of arguments.
+However, given that I'm horrible at writing shell scripts, and typically have more than a single sample to run on local hardware, not in the cloud
+like the Langmead lab does, this saves me a lot of typing as I only have to give it the directory of samples, besides the other locations.
+
+```{r}
+#| label: running-pump-unify
+#| eval: false
+# NOT RUN, for example only
+unify_output = rc3_run_pump_unify(
+  fasta = "path/to/fasta.fq.gz",
+  outputs = "path/to/outputs/dir",
+  monorail = "path/to/monorail/repo",
+  recount_pump = "path/to/recount-pump.XXX.sif",
+  recount_unify = "path/to/recount-unify.XXX.sif",
+  reference_path = "path/to/references",
+  reference = "hg38",
+  studyid = "studyid",
+  shortid = "shortid",
+  ncore = 2
+)
+```
+
+### Custom Organisms
+
+For the `monorail` argument, this can either be the top level directory that is normally *monorail-external*, or a vector of length 2, giving the paths to both
+of the shell scripts for orchestrating *recount-pump* and *recount-unify* respectively.
+This is useful when you are working with a custom organism outside of **human** and **mouse**.
+For example, I have been working with **zebrafish**, so I created a slightly modified script that handles the *recount-unify* step properly for zebrafish, and
+I would define the `monorail` argument like this, so that the unify step calls the correct shell script:
+
+```r
+monorail = c("monorail-external/singularity/run_recount_pump.sh", 
+             "monorail-external/sngularity/run_recount_unify_mz11.sh")
+```
+
+### Samples and IDs
+
+This script **currently** expects each sample to have two fasta files that are named:
+
+* sample_id_1.fq.gz
+* sample_id_2.fq.gz
+
+*monorail-external* also assumes that the last two places of any identifier such as **sample_id**, **study_id** or **shortid** <span style="color: red">do not</span> contain an underscore or any other non-alphanumeric character, i.e. they should contain [a-z] and or [0-9]. 
+
+## Copying Unify Outputs
 
 Two important notes:
 

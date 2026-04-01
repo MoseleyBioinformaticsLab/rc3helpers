@@ -59,10 +59,11 @@ rc3_run_pump_unify = function(
   setwd(pump_dir)
 
   for (isample in unique_samples) {
+    just_sample = fs::path_file(isample)
     run_sample = glue::glue(
-      "/bin/bash/ {monorail[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {isample}_1.fq.gz {isample}_2.fq.gz {studyid}"
+      "{monorail[1]} {recount_pump} {just_sample} local {reference} {ncore} {reference_path} {isample}_1.fq.gz {isample}_2.fq.gz {studyid}"
     )
-    system(run_sample, wait = TRUE)
+    system2("/bin/bash", args = run_sample)
   }
 
   # unify steps
@@ -83,9 +84,9 @@ rc3_run_pump_unify = function(
     sep = "\t"
   )
   run_unify = glue::glue(
-    "/bin/bash {monorail[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {short}:101"
+    "{monorail[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
   )
-  system(run_unify, wait = TRUE)
+  system2("/bin/bash", args = run_unify)
 
   return(unify_dir)
 }

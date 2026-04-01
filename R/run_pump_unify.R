@@ -12,8 +12,9 @@
 #' @param shortid short id
 #' @param ncore how many cores to use
 #'
-#' @import rlang
+#' @importFrom rlang caller_arg caller_env
 #' @importFrom withr local_dir
+#' @export
 #' @return unify output directory
 rc3_run_pump_unify = function(
   fasta = ".",

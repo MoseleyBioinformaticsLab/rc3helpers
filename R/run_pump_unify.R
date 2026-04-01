@@ -74,14 +74,18 @@ rc3_run_pump_unify = function(
   }
   fs::dir_create(unify_dir)
   setwd(unify_dir)
-  sample_table = tibble::tibble(study_id = studyid, sample_id = unique_samples)
+  sample_table = tibble::tibble(
+    study_id = studyid,
+    sample_id = fs::path_file(unique_samples)
+  )
   sample_metadata_path = fs::path(outputs, "sample_metadata.tsv")
   write.table(
     sample_table,
     file = sample_metadata_path,
     row.names = FALSE,
     col.names = TRUE,
-    sep = "\t"
+    sep = "\t",
+    quote = FALSE
   )
   run_unify = glue::glue(
     "{monorail[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"

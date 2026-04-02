@@ -16,11 +16,22 @@ with local samples in two ways:
     [recount3](https://bioconductor.org/packages/release/bioc/html/recount3.html)
     R package.
 
+## Installation
+
+You can install the development version of `rc3helpers` from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("MoseleyBioinformaticsLab/rc3helpers")
+```
+
 ## Running Pump & Unify
 
 This assumes you’ve already gotten everything setup for running pump and
 unify locally. You can find instructions for that on the
-[monorail](https://github.com/langmeadlab/monorail) README.
+[monorail-external](https://github.com/langmead-lab/monorail-external)
+README.
 
 I realize that the rc3_run_pump_unify function call takes a **lot** of
 arguments. However, given that I’m horrible at writing shell scripts,
@@ -87,27 +98,15 @@ Two important notes:
     supported. Therefore, we create symbolic links to the files that
     `recount3` expects to be there.
 
-## Installation
-
-You can install the development version of `rc3helpers` from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-pak::pak("MoseleyBioinformaticsLab/rc3helpers")
-```
-
-## Example
-
-I previously ran two SRA samples in local mode through the pump and
-unify workflow, with the `short_id` **sratest**.
+I previously ran two human SRA samples in local mode through the pump
+and unify workflow, with the `short_id` **sratest**.
 
 ``` r
 library(rc3helpers)
 tmp_dir = tempdir()
 rc3_dirs = rc3_setup_directory(base_dir = tmp_dir, short_id = "sratest")
-#> ℹ Using "/tmp/RtmpKrxkT6" to create underlying folders ...
-#> ℹ Creating directories: "/tmp/RtmpKrxkT6/human/data_sources/sratest/base_sums", "/tmp/RtmpKrxkT6/human/data_sources/sratest/exon_sums", "/tmp/RtmpKrxkT6/human/data_sources/sratest/gene_sums", "/tmp/RtmpKrxkT6/human/data_sources/sratest/junctions", "/tmp/RtmpKrxkT6/human/data_sources/sratest/metadata", "/tmp/RtmpKrxkT6/human/annotations/gene_sums", and "/tmp/RtmpKrxkT6/human/annotations/exon_sums"
+#> ℹ Using "/tmp/Rtmpa6E9DU" to create underlying folders ...
+#> ℹ Creating directories: "/tmp/Rtmpa6E9DU/human/data_sources/sratest/base_sums", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/exon_sums", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/gene_sums", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/junctions", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/metadata", "/tmp/Rtmpa6E9DU/human/annotations/gene_sums", and "/tmp/Rtmpa6E9DU/human/annotations/exon_sums"
 ```
 
 The directories created should look like this:

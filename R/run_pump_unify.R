@@ -66,6 +66,8 @@ rc3_run_pump_unify = function(
     system2("/bin/bash", args = run_sample)
   }
 
+  check_pump_outputs(unique_samples, outputs)
+
   # unify steps
   unify_dir = fs::path(outputs, "unify_output")
   if (fs::dir_exists(unify_dir)) {
@@ -95,6 +97,29 @@ rc3_run_pump_unify = function(
   return(unify_dir)
 }
 
+check_pump_outputs = function(unique_samples, outputs) {
+  just_samples = fs::path_file(unique_samples)
+  pump_outputs = fs::dir_ls(fs::path(outputs, "output"))
+  sample_not_pump = purrr::map_lgl(just_samples, \(x) {
+    !grepl(x, pump_outputs)
+  })
+
+  ul_fun = function(just_samples, sample_not_pump) {
+    ul = cli::cli_ul(just_samples[sample_not_pump])
+    cli::cli_end(ul)
+  }
+  if (any(sample_not_pump)) {
+    potential_samples = just_samples[sample_not_pump]
+    names(potential_samples) = rep("*", length(potential_samples))
+    cli::cli_abort(
+      message = c(
+        'The following samples did not get through the pump stage:',
+        potential_samples,
+        'i' = 'Maybe check them using {.fun rc3_check_gzip} before rerunning.'
+      )
+    )
+  }
+}
 
 check_monorail = function(
   monorail,

@@ -23,11 +23,19 @@ rc3helpers is a little package designed around making it easier work with local 
 1. Running recount-pump and recount-unify;
 1. Copying the output of recount-unify into the directory structure that allows importing local data into the [recount3](https://bioconductor.org/packages/release/bioc/html/recount3.html) R package.
 
+## Installation
+
+You can install the development version of `rc3helpers` from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("MoseleyBioinformaticsLab/rc3helpers")
+```
 
 ## Running Pump & Unify
 
 This assumes you've already gotten everything setup for running pump and unify locally.
-You can find instructions for that on the [monorail](https://github.com/langmeadlab/monorail) README.
+You can find instructions for that on the [monorail-external](https://github.com/langmead-lab/monorail-external) README.
 
 I realize that the rc3_run_pump_unify function call takes a **lot** of arguments.
 However, given that I'm horrible at writing shell scripts, and typically have more than a single sample to run on local hardware, not in the cloud
@@ -80,18 +88,8 @@ Two important notes:
 1. As of recount3 v 1.22.0, there is no option to have an organism outside of *human* or *mouse*, so we always use a directory of one of those two organisms.
 1. This also means that only certain annotations / references are supported. Therefore, we create symbolic links to the files that `recount3` expects to be there.
 
-## Installation
 
-You can install the development version of `rc3helpers` from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-pak::pak("MoseleyBioinformaticsLab/rc3helpers")
-```
-
-## Example
-
-I previously ran two SRA samples in local mode through the pump and unify workflow, with the `short_id` **sratest**.
+I previously ran two human SRA samples in local mode through the pump and unify workflow, with the `short_id` **sratest**.
 
 ```{r}
 #| label: setup-directories

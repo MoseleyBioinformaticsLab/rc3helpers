@@ -609,12 +609,14 @@ padding-top: 0px;
 <!-- badges: end -->
 
 <p>rc3helpers is a little package designed around making it easier work
-with local samples in two ways:</p>
+with local samples in a few ways:</p>
 <ol style="list-style-type: decimal">
 <li>Running recount-pump and recount-unify;</li>
 <li>Copying the output of recount-unify into the directory structure
 that allows importing local data into the <a href="https://bioconductor.org/packages/release/bioc/html/recount3.html">recount3</a>
 R package.</li>
+<li>Checking that something hasn’t happened to your *.fq.gz files during
+download or copying between locations.</li>
 </ol>
 <h2 id="installation">Installation</h2>
 <p>You can install the development version of <code>rc3helpers</code>
@@ -800,6 +802,20 @@ actually already exists. That’s OK.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">library</span>(recount3)</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>hp <span class="ot">=</span> <span class="fu">available_projects</span>(<span class="at">recount3_url =</span> tmp_dir)</span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>rse_genes <span class="ot">=</span> <span class="fu">create_rse</span>(hp[<span class="dv">1</span>, ], <span class="at">recount3_url =</span> tmp_dir)</span></code></pre></div>
+<h2 id="checking-fqgz">Checking fq.gz</h2>
+<p>Sometimes, if there is an issue with your filesystem, or the disks
+where data is being stored, when you copy or move a file, something can
+go wrong with the file. recount-pump depends on decompressing your fasta
+files into the docker container to run, so if anything gets corrupted
+with the fq.gz file, it just won’t run.</p>
+<p>So, assuming you have gzip installed on your system, we can check
+either an entire directory or particular files before running
+recount-pump and unify.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Not run</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>file_checks <span class="ot">=</span> <span class="fu">rc3_check_gz</span>(fasta)</span></code></pre></div>
+<p>This returns a data.frame, with any error messages emitted from gzip
+for each file. Ideally, you see “NA” in every entry before running the
+pump and unify steps.</p>
 
 </body>
 </html>

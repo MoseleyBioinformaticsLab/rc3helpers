@@ -1,4 +1,4 @@
-#' check gzip files
+#' check gz files
 #'
 #' Runs `gzip -t` on a set of files to verify there is nothing wrong with
 #' them before running pump and unify.
@@ -10,7 +10,7 @@
 #'
 #' @export
 #' @importFrom purrr map list_rbind
-rc3_check_gzip = function(fasta, regexp = "fq.gz") {
+rc3_check_gz = function(fasta, regexp = "fq.gz") {
   is_dir = fs::dir_exists(fasta)
   if (any(is_dir)) {
     all_files = fs::dir_ls(fasta[is_dir], regexp = regexp)

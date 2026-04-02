@@ -8,13 +8,15 @@
 <!-- badges: end -->
 
 rc3helpers is a little package designed around making it easier work
-with local samples in two ways:
+with local samples in a few ways:
 
 1.  Running recount-pump and recount-unify;
 2.  Copying the output of recount-unify into the directory structure
     that allows importing local data into the
     [recount3](https://bioconductor.org/packages/release/bioc/html/recount3.html)
     R package.
+3.  Checking that something hasn’t happened to your \*.fq.gz files
+    during download or copying between locations.
 
 ## Installation
 
@@ -234,3 +236,24 @@ library(recount3)
 hp = available_projects(recount3_url = tmp_dir)
 rse_genes = create_rse(hp[1, ], recount3_url = tmp_dir)
 ```
+
+## Checking fq.gz
+
+Sometimes, if there is an issue with your filesystem, or the disks where
+data is being stored, when you copy or move a file, something can go
+wrong with the file. recount-pump depends on decompressing your fasta
+files into the docker container to run, so if anything gets corrupted
+with the fq.gz file, it just won’t run.
+
+So, assuming you have gzip installed on your system, we can check either
+an entire directory or particular files before running recount-pump and
+unify.
+
+``` r
+# Not run
+file_checks = rc3_check_gz(fasta)
+```
+
+This returns a data.frame, with any error messages emitted from gzip for
+each file. Ideally, you see “NA” in every entry before running the pump
+and unify steps.

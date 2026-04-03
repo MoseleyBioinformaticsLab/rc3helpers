@@ -110,7 +110,7 @@ rc3_run_pump_unify = function(
 check_pump_outputs = function(unique_samples, pump_dir) {
   pump_outputs = fs::dir_ls(fs::path(pump_dir, "output"))
   sample_not_pump = purrr::map_lgl(unique_samples, \(x) {
-    !grepl(x, pump_outputs)
+    all(!grepl(x, pump_outputs))
   })
 
   if (any(sample_not_pump)) {

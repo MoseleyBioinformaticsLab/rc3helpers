@@ -71,7 +71,7 @@ rc3_run_pump_unify = function(
 
   for (isample in names(sample_list)) {
     run_sample = glue::glue(
-      "{monorail[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {sample_list[[isample]][1]} {sample_list[[isample]][2]} {studyid}"
+      "{monorail_paths[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {sample_list[[isample]][1]} {sample_list[[isample]][2]} {studyid}"
     )
     system2("/bin/bash", args = run_sample)
   }
@@ -100,7 +100,7 @@ rc3_run_pump_unify = function(
     quote = FALSE
   )
   run_unify = glue::glue(
-    "{monorail[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
+    "{monorail_paths[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
   )
   system2("/bin/bash", args = run_unify)
 

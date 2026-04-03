@@ -76,7 +76,7 @@ rc3_run_pump_unify = function(
     system2("/bin/bash", args = run_sample)
   }
 
-  check_pump_outputs(unique_samples, outputs)
+  check_pump_outputs(names(sample_list), outputs)
 
   # unify steps
   unify_dir = fs::path(outputs, "unify_output")
@@ -88,7 +88,7 @@ rc3_run_pump_unify = function(
   setwd(unify_dir)
   sample_table = tibble::tibble(
     study_id = studyid,
-    sample_id = fs::path_file(unique_samples)
+    sample_id = names(sample_list)
   )
   sample_metadata_path = fs::path(outputs, "sample_metadata.tsv")
   write.table(
@@ -108,14 +108,13 @@ rc3_run_pump_unify = function(
 }
 
 check_pump_outputs = function(unique_samples, outputs) {
-  just_samples = fs::path_file(unique_samples)
   pump_outputs = fs::dir_ls(fs::path(outputs, "output"))
-  sample_not_pump = purrr::map_lgl(just_samples, \(x) {
+  sample_not_pump = purrr::map_lgl(unique_samples, \(x) {
     !grepl(x, pump_outputs)
   })
 
   if (any(sample_not_pump)) {
-    potential_samples = just_samples[sample_not_pump]
+    potential_samples = unique_samples[sample_not_pump]
     names(potential_samples) = rep("*", length(potential_samples))
     cli::cli_abort(
       message = c(

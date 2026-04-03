@@ -69,11 +69,12 @@ rc3_run_pump_unify = function(
   fs::dir_create(pump_dir)
   setwd(pump_dir)
 
+  cli::cli_inform("Running recount-pump on all samples.")
   for (isample in names(sample_list)) {
     run_sample = glue::glue(
       "{monorail_paths[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {sample_list[[isample]][1]} {sample_list[[isample]][2]} {studyid}"
     )
-    system2("/bin/bash", args = run_sample)
+    system2("/bin/bash", args = run_sample, stdout = FALSE, stderr = TRUE)
   }
 
   check_pump_outputs(names(sample_list), pump_dir)
@@ -99,10 +100,11 @@ rc3_run_pump_unify = function(
     sep = "\t",
     quote = FALSE
   )
+  cli::cli_info("Running recount-unify.")
   run_unify = glue::glue(
     "{monorail_paths[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
   )
-  system2("/bin/bash", args = run_unify)
+  system2("/bin/bash", args = run_unify, stdout = FALSE, stderr = TRUE)
 
   return(unify_dir)
 }

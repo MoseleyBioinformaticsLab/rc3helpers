@@ -31,7 +31,6 @@ rc3_run_pump_unify = function(
   withr::local_dir(outputs)
   arg = rlang::caller_arg(fasta)
   sample_list = check_samples(fasta, arg = arg)
-  sample_paths = fs::path(fasta, unique_samples)
 
   monorail_paths = check_monorail(monorail, arg = arg)
   recount_pump = check_exists(recount_pump, type = "file", arg = arg)
@@ -103,10 +102,6 @@ check_pump_outputs = function(unique_samples, outputs) {
     !grepl(x, pump_outputs)
   })
 
-  ul_fun = function(just_samples, sample_not_pump) {
-    ul = cli::cli_ul(just_samples[sample_not_pump])
-    cli::cli_end(ul)
-  }
   if (any(sample_not_pump)) {
     potential_samples = just_samples[sample_not_pump]
     names(potential_samples) = rep("*", length(potential_samples))

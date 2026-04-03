@@ -76,7 +76,7 @@ rc3_run_pump_unify = function(
     system2("/bin/bash", args = run_sample)
   }
 
-  check_pump_outputs(names(sample_list), outputs)
+  check_pump_outputs(names(sample_list), pump_dir)
 
   # unify steps
   unify_dir = fs::path(outputs, "unify_output")
@@ -107,8 +107,8 @@ rc3_run_pump_unify = function(
   return(unify_dir)
 }
 
-check_pump_outputs = function(unique_samples, outputs) {
-  pump_outputs = fs::dir_ls(fs::path(outputs, "output"))
+check_pump_outputs = function(unique_samples, pump_dir) {
+  pump_outputs = fs::dir_ls(fs::path(pump_dir, "output"))
   sample_not_pump = purrr::map_lgl(unique_samples, \(x) {
     !grepl(x, pump_outputs)
   })

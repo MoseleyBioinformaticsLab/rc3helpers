@@ -30,12 +30,24 @@ rc3_run_pump_unify = function(
 ) {
   withr::local_dir(outputs)
   arg = rlang::caller_arg(fasta)
-  sample_list = check_samples(fasta, arg = arg)
+  sample_list = check_samples(fasta, arg = rlang::caller_arg(fasta))
 
-  monorail_paths = check_monorail(monorail, arg = arg)
-  recount_pump = check_exists(recount_pump, type = "file", arg = arg)
-  recount_unify = check_exists(recount_unify, type = "file", arg = arg)
-  reference_path = check_exists(reference_path, type = "dir", arg = arg)
+  monorail_paths = check_monorail(monorail, arg = rlang::caller_arg(monorail))
+  recount_pump = check_exists(
+    recount_pump,
+    type = "file",
+    arg = rlang::caller_arg(recount_pump)
+  )
+  recount_unify = check_exists(
+    recount_unify,
+    type = "file",
+    arg = rlang::caller_arg(recount_unify)
+  )
+  reference_path = check_exists(
+    reference_path,
+    type = "dir",
+    arg = rlang::caller_arg(reference_path)
+  )
 
   reference_main = check_exists(
     fs::path(reference_path, reference),

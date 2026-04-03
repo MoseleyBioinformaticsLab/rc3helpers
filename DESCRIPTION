@@ -1,6 +1,6 @@
 Package: rc3helpers
-Title: recount3 Directory Helpers
-Version: 0.0.1
+Title: recount3 Local Run Helpers
+Version: 0.0.2
 Authors@R: 
     person("Robert", "Flight", , "rflight79@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8141-7788"))

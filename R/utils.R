@@ -10,7 +10,7 @@
 #'
 #' @export
 #' @importFrom purrr map list_rbind
-rc3_check_gz = function(fasta, regexp = "fq.gz") {
+rc3_check_gz = function(fasta, regexp = "fq.gz|fastq.gz") {
   is_dir = fs::dir_exists(fasta)
   if (any(is_dir)) {
     all_files = fs::dir_ls(fasta[is_dir], regexp = regexp)

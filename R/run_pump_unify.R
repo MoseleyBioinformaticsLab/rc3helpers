@@ -30,7 +30,7 @@ rc3_run_pump_unify = function(
 ) {
   withr::local_dir(outputs)
   arg = rlang::caller_arg(fasta)
-  unique_samples = check_samples(fasta, arg = arg)
+  sample_list = check_samples(fasta, arg = arg)
   sample_paths = fs::path(fasta, unique_samples)
 
   monorail_paths = check_monorail(monorail, arg = arg)
@@ -58,10 +58,9 @@ rc3_run_pump_unify = function(
   fs::dir_create(pump_dir)
   setwd(pump_dir)
 
-  for (isample in unique_samples) {
-    just_sample = fs::path_file(isample)
+  for (isample in names(sample_list)) {
     run_sample = glue::glue(
-      "{monorail[1]} {recount_pump} {just_sample} local {reference} {ncore} {reference_path} {isample}_1.fq.gz {isample}_2.fq.gz {studyid}"
+      "{monorail[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {sample_list[[isample]][1]} {sample_list[[isample]][2]} {studyid}"
     )
     system2("/bin/bash", args = run_sample)
   }
@@ -188,23 +187,28 @@ check_samples = function(
   arg = rlang::caller_arg(fasta),
   call = rlang::caller_env()
 ) {
-  all_fasta = fs::dir_ls(fasta, regexp = "fq.gz$")
+  all_fasta = fs::dir_ls(fasta, regexp = "fq.gz$|fastq.gz$")
   n_files = length(all_fasta)
   if (n_files == 0) {
     cli::cli_abort(
-      message = c('No "fq.gz" files found in {.arg {arg}}.'),
+      message = c('No fasta files found in {.arg {arg}}.'),
       call = call
     )
   }
   if ((n_files %% 2) != 0 && (n_files > 0)) {
     cli::cli_abort(
       message = c(
-        '{.arg {arg}} must be a directory with pairs of fq.gz files.'
+        '{.arg {arg}} must be a directory with pairs of fq.gz or fastq.gz files.'
       ),
       call = call
     )
   }
-  unique_fasta = gsub("_1.fq.gz|_2.fq.gz", "", all_fasta) |> unique()
+  unique_fasta = gsub(
+    "_1.fq.gz|_2.fq.gz|_1.fastq.gz|_2.fastq.gz",
+    "",
+    all_fasta
+  ) |>
+    unique()
   n_unique = length(unique_fasta)
   if (n_files / n_unique != 2) {
     cli::cli_abort(
@@ -228,5 +232,17 @@ check_samples = function(
     )
   }
 
-  return(unique_fasta)
+  fasta_list = purrr::map(fs::path_file(unique_fasta), \(in_fasta) {
+    tmp = grep(in_fasta, all_fasta, value = TRUE) |> sort()
+    names(tmp) = NULL
+    if (length(tmp) == 0) {
+      return(NULL)
+    }
+    tmp
+  })
+  names(fasta_list) = fs::path_file(unique_fasta)
+  notnull_list = !purrr::map_lgl(fasta_list, is.null)
+  fasta_list = fasta_list[notnull_list]
+
+  return(fasta_list)
 }

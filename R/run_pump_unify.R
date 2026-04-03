@@ -100,7 +100,7 @@ rc3_run_pump_unify = function(
     sep = "\t",
     quote = FALSE
   )
-  cli::cli_info("Running recount-unify.")
+  cli::cli_inform("Running recount-unify.")
   run_unify = glue::glue(
     "{monorail_paths[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
   )

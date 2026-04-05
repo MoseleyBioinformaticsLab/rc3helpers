@@ -29,8 +29,11 @@ rc3_run_pump_unify = function(
   ncore = 1
 ) {
   withr::local_dir(outputs)
-  arg = rlang::caller_arg(fasta)
-  sample_list = check_samples(fasta, arg = rlang::caller_arg(fasta))
+
+  sample_list = check_samples(
+    fasta,
+    fasta_arg = rlang::caller_arg(fasta)
+  )
 
   monorail_paths = check_monorail(monorail, arg = rlang::caller_arg(monorail))
   recount_pump = check_exists(
@@ -87,7 +90,7 @@ rc3_run_pump_unify = function(
   }
   fs::dir_create(unify_dir)
   setwd(unify_dir)
-  sample_table = tibble::tibble(
+  sample_table = data.frame(
     study_id = studyid,
     sample_id = names(sample_list)
   )
@@ -105,6 +108,8 @@ rc3_run_pump_unify = function(
     "{monorail_paths[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
   )
   system2("/bin/bash", args = run_unify, stdout = TRUE, stderr = "")
+
+  cli::cli_inform("Done!")
 
   return(unify_dir)
 }
@@ -192,7 +197,7 @@ check_exists = function(
 
 check_samples = function(
   fasta,
-  arg = rlang::caller_arg(fasta),
+  fasta_arg = rlang::caller_arg(fasta),
   call = rlang::caller_env()
 ) {
   all_fasta = fs::dir_ls(fasta, regexp = "fq.gz$|fastq.gz$")
@@ -206,7 +211,7 @@ check_samples = function(
   if ((n_files %% 2) != 0 && (n_files > 0)) {
     cli::cli_abort(
       message = c(
-        '{.arg {arg}} must be a directory with pairs of fq.gz or fastq.gz files.'
+        '{.arg {fasta_arg}} must be a directory with pairs of fq.gz or fastq.gz files.'
       ),
       call = call
     )

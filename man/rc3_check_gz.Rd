@@ -4,7 +4,7 @@
 \alias{rc3_check_gz}
 \title{check gz files}
 \usage{
-rc3_check_gz(fasta, regexp = "fq.gz")
+rc3_check_gz(fasta, regexp = "fq.gz|fastq.gz")
 }
 \arguments{
 \item{fasta}{the directory to check, or a list of files directly.}

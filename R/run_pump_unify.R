@@ -70,9 +70,8 @@ rc3_run_pump_unify = function(
   )
 
   # pump steps
+  pump_dir = fs::path(outputs, "pump_output")
   if (run %in% c("both", "pump")) {
-    pump_dir = fs::path(outputs, "pump_output")
-
     # if delete and rerun, nuke the old results.
     # otherwise, check the outputs, delete only what is necessary
     # and rerun them before running unify

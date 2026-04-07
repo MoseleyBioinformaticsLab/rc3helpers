@@ -113,13 +113,15 @@ rc3_run_pump_unify = function(
   }
 
   # unify steps
+  unify_dir = fs::path(outputs, "unify_output")
   if (run %in% c("both", "unify")) {
     check_pump_outputs(
       names(sample_list),
       pump_dir,
       die = "yes"
     )
-    unify_dir = fs::path(outputs, "unify_output")
+
+    # we always delete it, otherwise things will get a little messed up
     if (fs::dir_exists(unify_dir)) {
       cli::cli_inform("Deleting the directory {.file {unify_dir}}.")
       fs::dir_delete(unify_dir)

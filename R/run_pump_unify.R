@@ -11,6 +11,9 @@
 #' @param studyid the study id
 #' @param shortid short id
 #' @param ncore how many cores to use
+#' @param run which parts of the workflow to run? (both, pump, unify)
+#' @param delete_oldpump should the old recount-pump results be deleted and regenerated?
+#' @param run_or_show do you want the commands shown, or actually run?
 #'
 #' @importFrom rlang caller_arg caller_env
 #' @importFrom withr local_dir
@@ -26,7 +29,10 @@ rc3_run_pump_unify = function(
   reference = "hg38",
   studyid = "other1",
   shortid = "test",
-  ncore = 1
+  ncore = 1,
+  run = "both",
+  delete_oldpump = "yes",
+  run_or_show = "run"
 ) {
   withr::local_dir(outputs)
 
@@ -64,72 +70,137 @@ rc3_run_pump_unify = function(
   )
 
   # pump steps
-  pump_dir = fs::path(outputs, "pump_output")
-  if (fs::dir_exists(pump_dir)) {
-    cli::cli_inform("Deleting the directory {.file {pump_dir}}.")
-    fs::dir_delete(pump_dir)
-  }
-  fs::dir_create(pump_dir)
-  setwd(pump_dir)
+  if (run %in% c("both", "pump")) {
+    pump_dir = fs::path(outputs, "pump_output")
 
-  cli::cli_inform("Running recount-pump on all samples.")
-  for (isample in names(sample_list)) {
-    run_sample = glue::glue(
-      "{monorail_paths[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {sample_list[[isample]][1]} {sample_list[[isample]][2]} {studyid}"
-    )
-    system2("/bin/bash", args = run_sample, stdout = TRUE, stderr = "")
-  }
+    # if delete and rerun, nuke the old results.
+    # otherwise, check the outputs, delete only what is necessary
+    # and rerun them before running unify
+    if (delete_oldpump %in% "yes") {
+      if (fs::dir_exists(pump_dir)) {
+        cli::cli_inform("Deleting the directory {.file {pump_dir}}.")
+        fs::dir_delete(pump_dir)
+      }
+      fs::dir_create(pump_dir)
+      run_list = sample_list
+    } else {
+      notdone_samples = check_pump_outputs(
+        names(sample_list),
+        pump_dir,
+        die = "no"
+      )
+      run_list = sample_list[notdone_samples]
+    }
 
-  check_pump_outputs(names(sample_list), pump_dir)
+    setwd(pump_dir)
+
+    cli::cli_inform("Running recount-pump on samples.")
+    for (isample in names(run_list)) {
+      run_sample = glue::glue(
+        "{monorail_paths[1]} {recount_pump} {isample} local {reference} {ncore} {reference_path} {sample_list[[isample]][1]} {sample_list[[isample]][2]} {studyid}"
+      )
+      if (run_or_show %in% "run") {
+        system2("/bin/bash", args = run_sample, stdout = TRUE, stderr = "")
+      } else {
+        cli::cli_inform(
+          message = c(
+            "To run from the command line:",
+            'i' = paste0("{.field /bin/bash ", run_sample, "}")
+          )
+        )
+      }
+    }
+  }
 
   # unify steps
-  unify_dir = fs::path(outputs, "unify_output")
-  if (fs::dir_exists(unify_dir)) {
-    cli::cli_inform("Deleting the directory {.file {unify_dir}}.")
-    fs::dir_delete(unify_dir)
-  }
-  fs::dir_create(unify_dir)
-  setwd(unify_dir)
-  sample_table = data.frame(
-    study_id = studyid,
-    sample_id = names(sample_list)
-  )
-  sample_metadata_path = fs::path(outputs, "sample_metadata.tsv")
-  write.table(
-    sample_table,
-    file = sample_metadata_path,
-    row.names = FALSE,
-    col.names = TRUE,
-    sep = "\t",
-    quote = FALSE
-  )
-  cli::cli_inform("Running recount-unify.")
-  run_unify = glue::glue(
-    "{monorail_paths[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
-  )
-  system2("/bin/bash", args = run_unify, stdout = TRUE, stderr = "")
+  if (run %in% c("both", "unify")) {
+    check_pump_outputs(
+      names(sample_list),
+      pump_dir,
+      die = "yes"
+    )
+    unify_dir = fs::path(outputs, "unify_output")
+    if (fs::dir_exists(unify_dir)) {
+      cli::cli_inform("Deleting the directory {.file {unify_dir}}.")
+      fs::dir_delete(unify_dir)
+    }
+    fs::dir_create(unify_dir)
+    setwd(unify_dir)
+    sample_table = data.frame(
+      study_id = studyid,
+      sample_id = names(sample_list)
+    )
+    sample_metadata_path = fs::path(outputs, "sample_metadata.tsv")
+    write.table(
+      sample_table,
+      file = sample_metadata_path,
+      row.names = FALSE,
+      col.names = TRUE,
+      sep = "\t",
+      quote = FALSE
+    )
+    cli::cli_inform("Running recount-unify.")
+    run_unify = glue::glue(
+      "{monorail_paths[2]} {recount_unify} {reference} {reference_path} {unify_dir} {pump_dir} {sample_metadata_path} {ncore} {shortid}:101"
+    )
+    if (run_or_show %in% "run") {
+      system2("/bin/bash", args = run_unify, stdout = TRUE, stderr = "")
+    } else {
+      cli::cli_inform(
+        message = c(
+          "To run from the command line: ",
+          'i' = paste0("{.field /bin/bash ", run_unify, "}")
+        )
+      )
+    }
 
-  cli::cli_inform("Done!")
+    cli::cli_inform("Done!")
+  }
 
   return(unify_dir)
 }
 
-check_pump_outputs = function(unique_samples, pump_dir) {
+check_pump_outputs = function(unique_samples, pump_dir, die = "yes") {
+  # logic:
+  #   get the sample directories for pump;
+  #   generate path to std.out (which it will have it ran at all)
+  #   check for the done message in std.out
+  #   filter the std.out paths for those that did complete
+  #   check sample ids that they have directories with completion
+  #   if any don't, either die with the error, or return the missing ones
   pump_outputs = fs::dir_ls(fs::path(pump_dir, "output"))
-  sample_not_pump = purrr::map_lgl(unique_samples, \(x) {
-    all(!grepl(x, pump_outputs))
+  std_out_locs = fs::path(pump_outputs, "std.out")
+
+  job_complete = purrr::map_lgl(std_out_locs, \(in_file) {
+    snakemake_log = readLines(in_file)
+    has_done = which(grepl("19 of 19 steps \\(100\\%\\) done", snakemake_log))
+    if ((length(has_done) > 0) && (has_done == (length(snakemake_log) - 1))) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
   })
 
-  if (any(sample_not_pump)) {
-    potential_samples = unique_samples[sample_not_pump]
-    names(potential_samples) = rep("*", length(potential_samples))
-    cli::cli_abort(
-      message = c(
-        'The following samples did not get through the pump stage:',
-        potential_samples,
-        'i' = 'Maybe check them using {.fun rc3_check_gzip} before rerunning.'
+  std_out_complete = std_out_locs[job_complete]
+
+  sample_not_complete = purrr::map_lgl(unique_samples, \(x) {
+    all(!grepl(x, std_out_complete))
+  })
+
+  if (any(sample_not_complete)) {
+    potential_samples = unique_samples[sample_not_complete]
+    if (die %in% "yes") {
+      names(potential_samples) = rep("*", length(potential_samples))
+      cli::cli_abort(
+        message = c(
+          'The following samples did not get through the pump stage:',
+          potential_samples,
+          'i' = 'Maybe check them using {.fun rc3_check_gzip} before rerunning.'
+        )
       )
-    )
+    } else {
+      return(potential_samples)
+    }
   }
 }
 

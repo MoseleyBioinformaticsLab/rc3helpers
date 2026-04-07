@@ -14,7 +14,10 @@ rc3_run_pump_unify(
   reference = "hg38",
   studyid = "other1",
   shortid = "test",
-  ncore = 1
+  ncore = 1,
+  run = "both",
+  delete_oldpump = "yes",
+  run_or_show = "run"
 )
 }
 \arguments{
@@ -33,6 +36,12 @@ rc3_run_pump_unify(
 \item{shortid}{short id}
 
 \item{ncore}{how many cores to use}
+
+\item{run}{which parts of the workflow to run? (both, pump, unify)}
+
+\item{delete_oldpump}{should the old recount-pump results be deleted and regenerated?}
+
+\item{run_or_show}{do you want the commands shown, or actually run?}
 }
 \value{
 unify output directory

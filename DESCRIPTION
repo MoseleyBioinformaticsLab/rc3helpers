@@ -1,6 +1,6 @@
 Package: rc3helpers
 Title: recount3 Local Run Helpers
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: 
     person("Robert", "Flight", , "rflight79@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8141-7788"))
@@ -13,3 +13,5 @@ Imports: fs,
     cli,
     rlang,
     withr
+Depends:
+    R (>= 4.1.0)

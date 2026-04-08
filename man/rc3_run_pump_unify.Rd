@@ -9,7 +9,7 @@ rc3_run_pump_unify(
   outputs = fs::path_dir(fs::path_expand(fasta)),
   monorail = "monorail-external",
   recount_pump = "recount-pump_1.1.3.sif",
-  recount_unify = "recount-pump_1.1.3.sif",
+  recount_unify = "recount-unify_1.1.1.sif",
   reference_path = ".",
   reference = "hg38",
   studyid = "other1",

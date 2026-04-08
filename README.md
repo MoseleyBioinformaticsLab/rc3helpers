@@ -54,9 +54,25 @@ unify_output = rc3_run_pump_unify(
   reference = "hg38",
   studyid = "studyid",
   shortid = "shortid",
-  ncore = 2
+  ncore = 2,
+  run = "both",
+  delete_oldpump = "yes",
+  run_or_show = "run"
 )
 ```
+
+When you are processing **a larger** number of samples (I’ve seen it
+happen with 17 samples), one or more of the samples might fail during
+the **pump** stage. `recount-unify` should die at that point from
+checking the samples, as `rc3_run_pump_unify` defaults to expecting the
+same samples in both the **pump** and **unify** stage. You should verify
+**what** caused the sample to error by checking the log file, normally
+in `path/to/outputs/output/sampleid_att0/std.out`. As long as it doesn’t
+say *decompression* failed, you should be able to **delete** the sample
+directory, and then set `run = "pump", delete_oldpump = "no"` to just do
+the **pump** part on the samples that previously failed. When that is
+complete, you can then do it again, with `run = "unify"`, and it will
+generate the **unify** results.
 
 ### Custom Organisms
 
@@ -107,8 +123,8 @@ and unify workflow, with the `short_id` **sratest**.
 library(rc3helpers)
 tmp_dir = tempdir()
 rc3_dirs = rc3_setup_directory(base_dir = tmp_dir, short_id = "sratest")
-#> ℹ Using "/tmp/Rtmpa6E9DU" to create underlying folders ...
-#> ℹ Creating directories: "/tmp/Rtmpa6E9DU/human/data_sources/sratest/base_sums", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/exon_sums", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/gene_sums", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/junctions", "/tmp/Rtmpa6E9DU/human/data_sources/sratest/metadata", "/tmp/Rtmpa6E9DU/human/annotations/gene_sums", and "/tmp/Rtmpa6E9DU/human/annotations/exon_sums"
+#> ℹ Using "/tmp/Rtmpdlp16N" to create underlying folders ...
+#> ℹ Creating directories: "/tmp/Rtmpdlp16N/human/data_sources/sratest/base_sums", "/tmp/Rtmpdlp16N/human/data_sources/sratest/exon_sums", "/tmp/Rtmpdlp16N/human/data_sources/sratest/gene_sums", "/tmp/Rtmpdlp16N/human/data_sources/sratest/junctions", "/tmp/Rtmpdlp16N/human/data_sources/sratest/metadata", "/tmp/Rtmpdlp16N/human/annotations/gene_sums", and "/tmp/Rtmpdlp16N/human/annotations/exon_sums"
 ```
 
 The directories created should look like this:

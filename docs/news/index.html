@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rc3helpers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,11 +38,19 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.4" id="rc3helpers-004">rc3helpers 0.0.4<a class="anchor" aria-label="anchor" href="#rc3helpers-004"></a></h2>
+<ul><li>Added better checking that a run properly completed by checking contents of <strong>std.out</strong>.</li>
+<li>Made it possible to run just the <strong>pump</strong>, <strong>unify</strong>, or <strong>both</strong> pump &amp; unify steps (see argument <code>run</code> of <code>rc3_run_pump_unify</code>).</li>
+<li>Can keep previous <strong>pump</strong> outputs, and only re-run the failed samples (see argument <code>delete_oldpump</code> of <code>rc3_run_pump_unify</code>).</li>
+<li>Can generate and <strong>show</strong> the list of commands instead of running them (see argument <code>run_or_show</code> of <code>rc3_run_pump_unify</code>).</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.3" id="rc3helpers-003">rc3helpers 0.0.3<a class="anchor" aria-label="anchor" href="#rc3helpers-003"></a></h2>
 <ul><li>Suppresses output that is going to <em>stdout</em>.</li>
 <li>Handles both fq.gz and fastq.gz files.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

@@ -9,7 +9,7 @@ runs of recount-pump and recount-unify on a set of samples."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">rc3helpers</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,12 +52,15 @@ runs of recount-pump and recount-unify on a set of samples.</p>
 <span>  outputs <span class="op">=</span> <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_file.html" class="external-link">path_dir</a></span><span class="op">(</span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_expand.html" class="external-link">path_expand</a></span><span class="op">(</span><span class="va">fasta</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  monorail <span class="op">=</span> <span class="st">"monorail-external"</span>,</span>
 <span>  recount_pump <span class="op">=</span> <span class="st">"recount-pump_1.1.3.sif"</span>,</span>
-<span>  recount_unify <span class="op">=</span> <span class="st">"recount-pump_1.1.3.sif"</span>,</span>
+<span>  recount_unify <span class="op">=</span> <span class="st">"recount-unify_1.1.1.sif"</span>,</span>
 <span>  reference_path <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  reference <span class="op">=</span> <span class="st">"hg38"</span>,</span>
 <span>  studyid <span class="op">=</span> <span class="st">"other1"</span>,</span>
 <span>  shortid <span class="op">=</span> <span class="st">"test"</span>,</span>
-<span>  ncore <span class="op">=</span> <span class="fl">1</span></span>
+<span>  ncore <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  run <span class="op">=</span> <span class="st">"both"</span>,</span>
+<span>  delete_oldpump <span class="op">=</span> <span class="st">"yes"</span>,</span>
+<span>  run_or_show <span class="op">=</span> <span class="st">"run"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,6 +98,18 @@ runs of recount-pump and recount-unify on a set of samples.</p>
 
 <dt id="arg-ncore">ncore<a class="anchor" aria-label="anchor" href="#arg-ncore"></a></dt>
 <dd><p>how many cores to use</p></dd>
+
+
+<dt id="arg-run">run<a class="anchor" aria-label="anchor" href="#arg-run"></a></dt>
+<dd><p>which parts of the workflow to run? (both, pump, unify)</p></dd>
+
+
+<dt id="arg-delete-oldpump">delete_oldpump<a class="anchor" aria-label="anchor" href="#arg-delete-oldpump"></a></dt>
+<dd><p>should the old recount-pump results be deleted and regenerated?</p></dd>
+
+
+<dt id="arg-run-or-show">run_or_show<a class="anchor" aria-label="anchor" href="#arg-run-or-show"></a></dt>
+<dd><p>do you want the commands shown, or actually run?</p></dd>
 
 </dl></div>
     <div class="section level2">

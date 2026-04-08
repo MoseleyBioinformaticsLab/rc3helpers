@@ -644,8 +644,27 @@ samples, besides the other locations.</p>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">reference =</span> <span class="st">&quot;hg38&quot;</span>,</span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>  <span class="at">studyid =</span> <span class="st">&quot;studyid&quot;</span>,</span>
 <span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>  <span class="at">shortid =</span> <span class="st">&quot;shortid&quot;</span>,</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">ncore =</span> <span class="dv">2</span></span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="at">ncore =</span> <span class="dv">2</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="at">run =</span> <span class="st">&quot;both&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="at">delete_oldpump =</span> <span class="st">&quot;yes&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="at">run_or_show =</span> <span class="st">&quot;run&quot;</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>)</span></code></pre></div>
+<p>When you are processing <strong>a larger</strong> number of samples
+(I’ve seen it happen with 17 samples), one or more of the samples might
+fail during the <strong>pump</strong> stage. <code>recount-unify</code>
+should die at that point from checking the samples, as
+<code>rc3_run_pump_unify</code> defaults to expecting the same samples
+in both the <strong>pump</strong> and <strong>unify</strong> stage. You
+should verify <strong>what</strong> caused the sample to error by
+checking the log file, normally in
+<code>path/to/outputs/output/sampleid_att0/std.out</code>. As long as it
+doesn’t say <em>decompression</em> failed, you should be able to
+<strong>delete</strong> the sample directory, and then set
+<code>run = &quot;pump&quot;, delete_oldpump = &quot;no&quot;</code> to just do the
+<strong>pump</strong> part on the samples that previously failed. When
+that is complete, you can then do it again, with
+<code>run = &quot;unify&quot;</code>, and it will generate the
+<strong>unify</strong> results.</p>
 <h3 id="custom-organisms">Custom Organisms</h3>
 <p>For the <code>monorail</code> argument, this can either be the top
 level directory that is normally <em>monorail-external</em>, or a vector
@@ -689,8 +708,8 @@ and unify workflow, with the <code>short_id</code>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(rc3helpers)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>tmp_dir <span class="ot">=</span> <span class="fu">tempdir</span>()</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>rc3_dirs <span class="ot">=</span> <span class="fu">rc3_setup_directory</span>(<span class="at">base_dir =</span> tmp_dir, <span class="at">short_id =</span> <span class="st">&quot;sratest&quot;</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ℹ Using &quot;/tmp/Rtmpa6E9DU&quot; to create underlying folders ...</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ℹ Creating directories: &quot;/tmp/Rtmpa6E9DU/human/data_sources/sratest/base_sums&quot;, &quot;/tmp/Rtmpa6E9DU/human/data_sources/sratest/exon_sums&quot;, &quot;/tmp/Rtmpa6E9DU/human/data_sources/sratest/gene_sums&quot;, &quot;/tmp/Rtmpa6E9DU/human/data_sources/sratest/junctions&quot;, &quot;/tmp/Rtmpa6E9DU/human/data_sources/sratest/metadata&quot;, &quot;/tmp/Rtmpa6E9DU/human/annotations/gene_sums&quot;, and &quot;/tmp/Rtmpa6E9DU/human/annotations/exon_sums&quot;</span></span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ℹ Using &quot;/tmp/Rtmpdlp16N&quot; to create underlying folders ...</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ℹ Creating directories: &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/base_sums&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/exon_sums&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/gene_sums&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/junctions&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/metadata&quot;, &quot;/tmp/Rtmpdlp16N/human/annotations/gene_sums&quot;, and &quot;/tmp/Rtmpdlp16N/human/annotations/exon_sums&quot;</span></span></code></pre></div>
 <p>The directories created should look like this:</p>
 <pre><code>human
 ├── annotations

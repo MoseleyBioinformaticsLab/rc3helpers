@@ -82,10 +82,12 @@ rc3_copy_unify_outputs = function(
   if (length(rc3_directory) == 1) {
     dir_exists = fs::dir_exists(rc3_directory)
     if (dir_exists) {
-      all_dirs = fs::path(
-        rc3_directory,
-        .list_sources_annotations_dirs(short_id)
-      )
+      all_dirs =
+        .list_sources_annotations_dirs(
+          base_dir = rc3_directory,
+          organism = organism,
+          short_id = short_id
+        )
     }
   }
   if (length(rc3_directory) == 7) {

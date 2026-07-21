@@ -633,6 +633,11 @@ writing shell scripts, and typically have more than a single sample to
 run on local hardware, not in the cloud like the Langmead lab does, this
 saves me a lot of typing as I only have to give it the directory of
 samples, besides the other locations.</p>
+<p>A nice thing about this function, is it creates the
+<code>study_id</code> to <code>sample_id</code> mapping file
+<code>sample_metadata.tsv</code>, with the assumption that all of the
+samples in the directory are associated with the same
+<code>study_id</code> provided by the <code>studyid</code> argument.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># NOT RUN, for example only</span></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>unify_output <span class="ot">=</span> <span class="fu">rc3_run_pump_unify</span>(</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">fasta =</span> <span class="st">&quot;path/to/fasta.fq.gz&quot;</span>,</span>
@@ -708,8 +713,8 @@ and unify workflow, with the <code>short_id</code>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(rc3helpers)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>tmp_dir <span class="ot">=</span> <span class="fu">tempdir</span>()</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>rc3_dirs <span class="ot">=</span> <span class="fu">rc3_setup_directory</span>(<span class="at">base_dir =</span> tmp_dir, <span class="at">short_id =</span> <span class="st">&quot;sratest&quot;</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ℹ Using &quot;/tmp/Rtmpdlp16N&quot; to create underlying folders ...</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ℹ Creating directories: &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/base_sums&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/exon_sums&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/gene_sums&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/junctions&quot;, &quot;/tmp/Rtmpdlp16N/human/data_sources/sratest/metadata&quot;, &quot;/tmp/Rtmpdlp16N/human/annotations/gene_sums&quot;, and &quot;/tmp/Rtmpdlp16N/human/annotations/exon_sums&quot;</span></span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; ℹ Using &quot;/tmp/Rtmps0UnvB&quot; to create underlying folders ...</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; ℹ Creating directories: &quot;/tmp/Rtmps0UnvB/human/data_sources/sratest/base_sums&quot;, &quot;/tmp/Rtmps0UnvB/human/data_sources/sratest/exon_sums&quot;, &quot;/tmp/Rtmps0UnvB/human/data_sources/sratest/gene_sums&quot;, &quot;/tmp/Rtmps0UnvB/human/data_sources/sratest/junctions&quot;, &quot;/tmp/Rtmps0UnvB/human/data_sources/sratest/metadata&quot;, &quot;/tmp/Rtmps0UnvB/human/annotations/gene_sums&quot;, and &quot;/tmp/Rtmps0UnvB/human/annotations/exon_sums&quot;</span></span></code></pre></div>
 <p>The directories created should look like this:</p>
 <pre><code>human
 ├── annotations

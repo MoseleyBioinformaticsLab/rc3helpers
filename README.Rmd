@@ -42,6 +42,8 @@ I realize that the rc3_run_pump_unify function call takes a **lot** of arguments
 However, given that I'm horrible at writing shell scripts, and typically have more than a single sample to run on local hardware, not in the cloud
 like the Langmead lab does, this saves me a lot of typing as I only have to give it the directory of samples, besides the other locations.
 
+A nice thing about this function, is it creates the `study_id` to `sample_id` mapping file `sample_metadata.tsv`, with the assumption that all of the samples in the directory are associated with the same `study_id` provided by the `studyid` argument.
+
 ```{r}
 #| label: running-pump-unify
 #| eval: false

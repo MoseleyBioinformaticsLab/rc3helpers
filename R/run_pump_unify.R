@@ -1,7 +1,9 @@
 #' run recount-pump and recount-unify
 #'
 #' Given the parameters, attempts to create and run the commands to carry out the
-#' runs of recount-pump and recount-unify on a set of samples.
+#' runs of recount-pump and recount-unify on a set of samples. Assumes that all of
+#' the samples in the directory of `fasta` are all associated with the same `study_id`
+#' in the `studyid` argument, and creates the `sample_metadata.tsv` file for the `unify` step.
 #'
 #' @param fasta the directory with the input samples to be run
 #' @param outputs where to keep outputs, assumed to be the parent of fasta
@@ -14,6 +16,11 @@
 #' @param run which parts of the workflow to run? (both, pump, unify)
 #' @param delete_oldpump should the old recount-pump results be deleted and regenerated?
 #' @param run_or_show do you want the commands shown, or actually run?
+#'
+#' @details An important thing to know, if your samples end with `_1` or `_4` etc, you want to rename
+#' them to have two numbers at the end, like `_01` or `_04`. The `recount3` workflow does not
+#' like underscores at the end of a sample identifier. `_1.fq.gz` and `_2.fq.gz` for paired-end
+#' reads is normal and expected, it's the bits before that that are important.
 #'
 #' @importFrom rlang caller_arg caller_env
 #' @importFrom withr local_dir

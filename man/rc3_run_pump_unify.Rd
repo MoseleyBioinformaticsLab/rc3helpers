@@ -48,5 +48,13 @@ unify output directory
 }
 \description{
 Given the parameters, attempts to create and run the commands to carry out the
-runs of recount-pump and recount-unify on a set of samples.
+runs of recount-pump and recount-unify on a set of samples. Assumes that all of
+the samples in the directory of \code{fasta} are all associated with the same \code{study_id}
+in the \code{studyid} argument, and creates the \code{sample_metadata.tsv} file for the \code{unify} step.
+}
+\details{
+An important thing to know, if your samples end with \verb{_1} or \verb{_4} etc, you want to rename
+them to have two numbers at the end, like \verb{_01} or \verb{_04}. The \code{recount3} workflow does not
+like underscores at the end of a sample identifier. \verb{_1.fq.gz} and \verb{_2.fq.gz} for paired-end
+reads is normal and expected, it's the bits before that that are important.
 }

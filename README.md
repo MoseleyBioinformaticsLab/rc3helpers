@@ -42,6 +42,11 @@ not in the cloud like the Langmead lab does, this saves me a lot of
 typing as I only have to give it the directory of samples, besides the
 other locations.
 
+A nice thing about this function, is it creates the `study_id` to
+`sample_id` mapping file `sample_metadata.tsv`, with the assumption that
+all of the samples in the directory are associated with the same
+`study_id` provided by the `studyid` argument.
+
 ``` r
 # NOT RUN, for example only
 unify_output = rc3_run_pump_unify(
@@ -123,8 +128,8 @@ and unify workflow, with the `short_id` **sratest**.
 library(rc3helpers)
 tmp_dir = tempdir()
 rc3_dirs = rc3_setup_directory(base_dir = tmp_dir, short_id = "sratest")
-#> ℹ Using "/tmp/Rtmpdlp16N" to create underlying folders ...
-#> ℹ Creating directories: "/tmp/Rtmpdlp16N/human/data_sources/sratest/base_sums", "/tmp/Rtmpdlp16N/human/data_sources/sratest/exon_sums", "/tmp/Rtmpdlp16N/human/data_sources/sratest/gene_sums", "/tmp/Rtmpdlp16N/human/data_sources/sratest/junctions", "/tmp/Rtmpdlp16N/human/data_sources/sratest/metadata", "/tmp/Rtmpdlp16N/human/annotations/gene_sums", and "/tmp/Rtmpdlp16N/human/annotations/exon_sums"
+#> ℹ Using "/tmp/Rtmps0UnvB" to create underlying folders ...
+#> ℹ Creating directories: "/tmp/Rtmps0UnvB/human/data_sources/sratest/base_sums", "/tmp/Rtmps0UnvB/human/data_sources/sratest/exon_sums", "/tmp/Rtmps0UnvB/human/data_sources/sratest/gene_sums", "/tmp/Rtmps0UnvB/human/data_sources/sratest/junctions", "/tmp/Rtmps0UnvB/human/data_sources/sratest/metadata", "/tmp/Rtmps0UnvB/human/annotations/gene_sums", and "/tmp/Rtmps0UnvB/human/annotations/exon_sums"
 ```
 
 The directories created should look like this:

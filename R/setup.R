@@ -127,7 +127,7 @@ rc3_copy_unify_outputs = function(
       full_source = grep(source_dir, ref_files, value = TRUE)
       just_file = fs::path_file(full_source)
       dest_file = fs::path(dest_dir, just_file)
-      fs::file_copy(full_source, dest_file)
+      fs::file_copy(full_source, dest_file, overwrite = TRUE)
     }
   })
 
